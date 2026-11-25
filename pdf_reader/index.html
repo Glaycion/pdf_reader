@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f2f7fd" />
+    <meta name="description" content="Выберите или перетащите PDF-документ для просмотра прямо в браузере." />
+    <title>Загрузка PDF-документа</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="icon-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></symbol>
+      <symbol id="icon-folder" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v2M3 7h6l2 3h10l-2 10H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/></symbol>
+      <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol>
+      <symbol id="icon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.1"/></symbol>
+    </svg>
+
+    <main class="page-shell">
+        <section class="upload-card" id="upload" aria-labelledby="upload-title">
+          <div class="card-header">
+            <h1 id="upload-title"><svg class="icon"><use href="#icon-file"/></svg>Загрузка документа</h1>
+            <span class="format-badge">PDF</span>
+          </div>
+
+          <input class="visually-hidden" type="file" id="file-input" accept=".pdf,application/pdf" tabindex="-1" aria-label="Выберите PDF-документ" />
+
+          <div class="drop-zone" id="drop-zone" role="group" aria-label="Область загрузки PDF" aria-describedby="file-requirements">
+            <div class="document-art" aria-hidden="true">
+              <div class="paper-back"></div>
+              <div class="paper-front"><span class="paper-fold"></span><span class="paper-label">PDF</span><span class="paper-line"></span><span class="paper-line short"></span></div>
+              <span class="paper-plus">+</span>
+            </div>
+            <h2 id="drop-title">Перетащите PDF-файл сюда</h2>
+            <p id="drop-description">или выберите его на вашем устройстве</p>
+            <button class="button button-primary" id="choose-file" type="button"><svg class="icon"><use href="#icon-folder"/></svg>Выбрать файл</button>
+            <span class="file-requirements" id="file-requirements">Только PDF<span aria-hidden="true">·</span>До 20 МБ<span aria-hidden="true">·</span>Один документ</span>
+          </div>
+
+          <div class="selected-file" id="selected-file" hidden>
+            <div class="success-symbol" aria-hidden="true"><svg class="icon"><use href="#icon-check"/></svg></div>
+            <h2>Ваш документ готов</h2>
+            <p class="selected-description">Откройте его, чтобы убедиться, что всё на месте.</p>
+            <div class="file-details">
+              <span class="file-type-icon" aria-hidden="true">PDF</span>
+              <div class="file-meta"><p id="file-name"></p><span id="file-size"></span></div>
+              <button class="icon-button remove-file" id="remove-file" type="button" aria-label="Убрать выбранный документ" title="Убрать документ"><svg class="icon"><use href="#icon-close"/></svg></button>
+            </div>
+            <div class="file-actions">
+              <button class="button button-primary" id="preview-file" type="button"><svg class="icon"><use href="#icon-eye"/></svg>Открыть документ</button>
+              <button class="button button-secondary" id="replace-file" type="button">Выбрать другой</button>
+            </div>
+          </div>
+
+          <div class="error-message" id="error-message" role="alert" hidden><svg class="icon"><use href="#icon-info"/></svg><span id="error-text"></span></div>
+          <div class="privacy-note"><svg class="icon"><use href="#icon-lock"/></svg>Ваш документ остаётся только в вашем браузере</div>
+          <p class="visually-hidden" id="upload-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </section>
+
+    </main>
+
+    <dialog class="preview-dialog" id="preview-dialog" aria-labelledby="preview-title">
+      <div class="preview-toolbar"><div><svg class="icon"><use href="#icon-file"/></svg><h2 id="preview-title">Предпросмотр PDF</h2></div><button class="icon-button" id="close-preview" type="button" aria-label="Закрыть предпросмотр" autofocus><svg class="icon"><use href="#icon-close"/></svg></button></div>
+      <div class="preview-content" id="preview-content"></div>
+      <div class="preview-footer"><span>Предпросмотр на вашем устройстве</span><div class="preview-links"><a id="open-original" target="_blank" rel="noopener noreferrer">В отдельной вкладке</a><a id="download-original">Скачать PDF</a></div></div>
+    </dialog>
+
+    <noscript><div class="noscript-note">Для выбора и просмотра PDF включите JavaScript в браузере.</div></noscript>
+  </body>
+</html>
